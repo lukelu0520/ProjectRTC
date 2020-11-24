@@ -5,8 +5,9 @@ module.exports = function(io, streams) {
     client.emit('id', client.id);
 
     client.on('message', function (details) {
-      var otherClient = io.sockets.connected[details.to];
-
+      //console.log(io.sockets.sockets.get(details.to)); 
+      //var otherClient = io.sockets.connected[details.to];
+      var otherClient = io.sockets.sockets.get(details.to);
       if (!otherClient) {
         return;
       }
