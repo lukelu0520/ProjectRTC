@@ -25,13 +25,12 @@
 			})
 			.catch(Error('Failed to get access to local media.'));
 		};
+
     	camera.stop = function(){
     		return new Promise(function(resolve, reject){			
 				try {
-					//camera.stream.stop() no longer works
-          for( var track in camera.stream.getTracks() ){
-            track.stop();
-          }
+					//camera.stream.stop() no longer works for Chrome 45+ (2015)
+					camera.stream.getTracks().forEach(function(track){track.stop()});
 					camera.preview.src = '';
 					resolve();
 				} catch(error) {
@@ -42,7 +41,7 @@
     			$rootScope.$broadcast('cameraIsOn',false);
     		});	
 		};
-		return camera;
+	return camera;
     }]);
 
 	app.controller('RemoteStreamsController', ['camera', '$location', '$http', function(camera, $location, $http){
@@ -54,10 +53,24 @@
 		    }
 		}
 		rtc.loadData = function () {
-			// get list of streams from the server
-			$http.get('/streams.json').success(function(data){
+			// For angular 1.3.15 - 1.4.3; get list of streams from the server
+			// $http.get('/streams.json').success(function(data){
+			// 	// filter own stream
+			// 	var streams = data.filter(function(stream) {
+			//       	return stream.id != client.getId();
+			//     });
+			//     // get former state
+			//     for(var i=0; i<streams.length;i++) {
+			//     	var stream = getStreamById(streams[i].id);
+			//     	streams[i].isPlaying = (!!stream) ? stream.isPLaying : false;
+			//     }
+			//     // save new streams
+			//     rtc.remoteStreams = streams;
+			// });
+			// For angular 1.6.0+; get list of streams from the server
+			$http.get('/streams.json').then(function(res){
 				// filter own stream
-				var streams = data.filter(function(stream) {
+				var streams = res.data.filter(function(stream) {
 			      	return stream.id != client.getId();
 			    });
 			    // get former state
@@ -67,6 +80,8 @@
 			    }
 			    // save new streams
 			    rtc.remoteStreams = streams;
+			}, function(error){
+				console.log('http get streams json error');
 			});
 		};
 
@@ -132,7 +147,7 @@
 				camera.stop()
 				.then(function(result){
 					client.send('leave');
-	    			client.setLocalStream(null);
+	    				client.setLocalStream(null);
 				})
 				.catch(function(err) {
 					console.log(err);
@@ -140,12 +155,12 @@
 			} else {
 				camera.start()
 				.then(function(result) {
-					localStream.link = $window.location.host + '/' + client.getId();
 					client.send('readyToStream', { name: localStream.name });
 				})
 				.catch(function(err) {
 					console.log(err);
 				});
+				localStream.link = 'http://' + $window.location.host + '/' + client.getId(); // why putting the line into .then would have bug ?
 			}
 		};
 	}]);

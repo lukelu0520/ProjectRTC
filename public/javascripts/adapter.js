@@ -35,9 +35,6 @@ function trace(text) {
   }
 }
 
-
-console.log(navigator.mediaDevices.getUserMedia);
-
 if (navigator.mozGetUserMedia) {
   console.log('This appears to be Firefox');
 
@@ -231,7 +228,6 @@ function requestUserMedia(constraints) {
     var onError = function(error) {
       reject(error);
     };
-
     try {
       getUserMedia(constraints, onSuccess, onError);
     } catch (e) {

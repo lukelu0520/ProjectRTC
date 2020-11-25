@@ -7,7 +7,7 @@ module.exports = function(app, streams) {
                           header: 'WebRTC live streaming',
                           username: 'Username',
                           share: 'Share this link',
-                          footer: 'pierre@chabardes.net',
+                          footer: 'luke@tourmato.homes',
                           id: req.params.id
                         });
   };

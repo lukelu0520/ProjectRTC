@@ -4,8 +4,24 @@ var PeerManager = (function () {
       config = {
         peerConnectionConfig: {
           iceServers: [
-            {"url": "stun:23.21.150.121"},
-            {"url": "stun:stun.l.google.com:19302"}
+            {urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302', 
+            'stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302', 'stun:23.21.150.121']
+            },
+            {
+              urls: 'turn:192.158.29.39:3478?transport=udp',
+              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+              username: '28224511:1379330808'
+            },
+            {
+              urls: 'turn:192.158.29.39:3478?transport=tcp',
+              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+              username: '28224511:1379330808'
+            },
+            {
+              urls: 'turn:numb.viagenie.ca',
+              credential: 'muazkh',
+              username: 'webrtc@live.com'
+            }
           ]
         },
         peerConnectionConstraints: {
@@ -21,7 +37,7 @@ var PeerManager = (function () {
       
   socket.on('message', handleMessage);
   socket.on('id', function(id) {
-    localId = id;
+    localId = id.substring(0,4).toLowerCase();  //make localId shorter and only lower case for simplicity
   });
       
   function addPeer(remoteId) {
@@ -45,8 +61,7 @@ var PeerManager = (function () {
     };
     peer.pc.oniceconnectionstatechange = function(event) {
       switch(
-      (  event.srcElement // Chrome
-      || event.target   ) // Firefox
+      (event.target) // Firefox & Chrome
       .iceConnectionState) {
         case 'disconnected':
           remoteVideosContainer.removeChild(peer.remoteVideoEl);
