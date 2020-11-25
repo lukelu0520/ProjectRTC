@@ -37,7 +37,8 @@ var PeerManager = (function () {
       
   socket.on('message', handleMessage);
   socket.on('id', function(id) {
-    localId = id.substring(0,4).toLowerCase();  //make localId shorter and only lower case for simplicity
+    //localId = id.substring(0,4).toLowerCase();  //make localId shorter and only lower case for simplicity sharing
+    localId = id;
   });
       
   function addPeer(remoteId) {
