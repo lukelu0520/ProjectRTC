@@ -4,23 +4,24 @@ var PeerManager = (function () {
       config = {
         peerConnectionConfig: {
           iceServers: [
-            {urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302', 
-            'stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302', 'stun:23.21.150.121']
-            },
+            // {urls: ['stun:stun.l.google.com:19302', 'stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302', 
+            // 'stun:stun3.l.google.com:19302', 'stun:stun4.l.google.com:19302']
+            // },
+            // {
+            //   urls: 'turn:192.158.29.39:3478?transport=udp',
+            //   credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+            //   username: '28224511:1379330808'
+            // },
+            // {
+            //   urls: 'turn:192.158.29.39:3478?transport=tcp',
+            //   credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+            //   username: '28224511:1379330808'
+            // },
+            {urls:'stun:stun.l.google.com:19302'},
             {
-              urls: 'turn:192.158.29.39:3478?transport=udp',
-              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-              username: '28224511:1379330808'
-            },
-            {
-              urls: 'turn:192.158.29.39:3478?transport=tcp',
-              credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-              username: '28224511:1379330808'
-            },
-            {
-              urls: 'turn:numb.viagenie.ca',
-              credential: 'muazkh',
-              username: 'webrtc@live.com'
+              urls: 'turn:34.94.159.96',
+              credential: 'tourmato',
+              username: '1314520'
             }
           ]
         },
@@ -52,6 +53,7 @@ var PeerManager = (function () {
         });
       }
     };
+
     peer.pc.onaddstream = function(event) {
       attachMediaStream(peer.remoteVideoEl, event.stream);
       remoteVideosContainer.appendChild(peer.remoteVideoEl);
@@ -61,15 +63,16 @@ var PeerManager = (function () {
       remoteVideosContainer.removeChild(peer.remoteVideoEl);
     };
     peer.pc.oniceconnectionstatechange = function(event) {
-      switch(
-      (event.target) // Firefox & Chrome
-      .iceConnectionState) {
+      switch( (event.target).iceConnectionState ) {
         case 'disconnected':
           remoteVideosContainer.removeChild(peer.remoteVideoEl);
           break;
+        case 'connected':
+          console.log('we are connected!');
       }
     };
     peerDatabase[remoteId] = peer;
+
         
     return peer;
   }
@@ -113,6 +116,10 @@ var PeerManager = (function () {
         pc.setRemoteDescription(new RTCSessionDescription(message.payload), function(){}, error);
         break;
       case 'candidate':
+        console.log(pc.remoteDescription);
+        console.log(message.payload.label);
+        console.log(message.payload.id);
+        console.log(message.payload.candidate);
         if(pc.remoteDescription) {
           pc.addIceCandidate(new RTCIceCandidate({
             sdpMLineIndex: message.payload.label,

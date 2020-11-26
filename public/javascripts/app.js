@@ -161,6 +161,7 @@
 					console.log(err);
 				});
 				localStream.link = 'http://' + $window.location.host + '/' + client.getId(); // why putting the line into .then would have bug ?
+				console.log(localStream.link);
 			}
 		};
 	}]);
