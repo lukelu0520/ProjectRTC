@@ -17,7 +17,7 @@ var PeerManager = (function () {
             //   credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
             //   username: '28224511:1379330808'
             // },
-            {urls:'stun:stun.l.google.com:19302'},
+            //{urls:'stun:stun.l.google.com:19302'},
             {
               urls: 'turn:34.94.159.96',
               credential: 'tourmato',
